@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galaxy Anime</title>
+  <link rel="icon" href="icon.png" />
+  <link rel="manifest" href="manifest.json">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log("Service Worker Registered"))
+          .catch(err => console.error("Service Worker Failed", err));
+      });
+    }
+  </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <header class="bg-black p-4 text-center text-cyan-400 text-3xl font-bold shadow-md">
+    🌌 Galaxy Anime
+  </header>
+
+  <nav class="flex justify-center space-x-4 bg-gray-800 p-3 text-white">
+    <a href="#" onclick="showSection('home')" class="hover:text-cyan-400">الرئيسية</a>
+    <a href="#" onclick="showSection('login')" class="hover:text-cyan-400">تسجيل الدخول</a>
+    <a href="#" onclick="showSection('episodes')" class="hover:text-cyan-400">الحلقات</a>
+    <a href="#" onclick="showSection('comments')" class="hover:text-cyan-400">التعليقات</a>
+  </nav>
+
+  <main class="p-6 space-y-10">
+
+    <!-- الرئيسية -->
+    <section id="home">
+      <h2 class="text-2xl text-cyan-300 mb-4">🎉 مرحباً بك في جالاكسي أنمي</h2>
+      <p>استمتع بمشاهدة الحلقات، وشاركنا رأيك بالتعليقات!</p>
+    </section>
+
+    <!-- تسجيل الدخول -->
+    <section id="login" class="hidden">
+      <h2 class="text-2xl text-cyan-300 mb-4">تسجيل الدخول</h2>
+      <form onsubmit="login(event)" class="max-w-md space-y-4">
+        <input type="text" id="username" placeholder="اسم المستخدم" required class="w-full p-2 bg-gray-800 border border-cyan-500 rounded">
+        <input type="password" id="password" placeholder="كلمة المرور" required class="w-full p-2 bg-gray-800 border border-cyan-500 rounded">
+        <button type="submit" class="w-full bg-cyan-600 py-2 rounded hover:bg-cyan-700">تسجيل الدخول</button>
+      </form>
+    </section>
+
+    <!-- الحلقات -->
+    <section id="episodes" class="hidden">
+      <h2 class="text-2xl text-cyan-300 mb-4">🎥 الحلقات</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <iframe class="w-full h-64 rounded" src="https://drive.google.com/file/d/1B2vWuH5TrQS8OZs2qIkuDoUfz53IAbN0/preview" allow="autoplay"></iframe>
+        <iframe class="w-full h-64 rounded" src="https://drive.google.com/file/d/159E42XXhIc8UY8mhJQMDxxm_x6LPTbzo/preview" allow="autoplay"></iframe>
+      </div>
+    </section>
+
+    <!-- التعليقات -->
+    <section id="comments" class="hidden">
+      <h2 class="text-xl text-cyan-300 mb-2">💬 التعليقات</h2>
+      <form onsubmit="addComment(event)" class="mb-4">
+        <textarea id="commentInput" class="w-full p-2 bg-gray-800 border border-cyan-500 rounded mb-2" placeholder="اكتب تعليقك هنا..." required></textarea>
+        <button type="submit" class="bg-cyan-600 px-4 py-2 rounded hover:bg-cyan-700">نشر التعليق</button>
+      </form>
+      <div id="commentsSection" class="space-y-2"></div>
+    </section>
+
+  </main>
+
+  <footer class="bg-gray-800 text-center text-gray-400 p-4 mt-10">
+    &copy; 2025 Galaxy Anime. All rights reserved.
+  </footer>
+
+  <script>
+    function showSection(id) {
+      ['home', 'login', 'episodes', 'comments'].forEach(sec => {
+        document.getElementById(sec).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function login(event) {
+      event.preventDefault();
+      const user = document.getElementById('username').value;
+      localStorage.setItem('user', user);
+      alert('تم تسجيل الدخول بنجاح!');
+    }
+
+    const commentsSection = document.getElementById('commentsSection');
+    const storedComments = JSON.parse(localStorage.getItem('comments') || '[]');
+
+    function displayComments() {
+      commentsSection.innerHTML = '';
+      storedComments.forEach(comment => {
+        const p = document.createElement('p');
+        p.className = 'bg-gray-800 p-3 rounded border border-cyan-700';
+        p.textContent = comment;
+        commentsSection.appendChild(p);
+      });
+    }
+
+    function addComment(event) {
+      event.preventDefault();
+      const input = document.getElementById('commentInput');
+      const value = input.value.trim();
+      if (value) {
+        storedComments.push(value);
+        localStorage.setItem('comments', JSON.stringify(storedComments));
+        input.value = '';
+        displayComments();
+      }
+    }
+
+    displayComments();
+  </script>
+</body>
+</html>
